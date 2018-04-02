@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页2</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/jqueryui/1.12.0-rc.2/jquery-ui.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/jqgrid/4.6.0/css/ui.jqgrid.css" rel="stylesheet">
+
+    <script src="//cdn.bootcss.com/jquery/3.0.0-beta1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="//cdn.bootcss.com/jqgrid/4.6.0/js/i18n/grid.locale-en.js"></script>
+    <script src="//cdn.bootcss.com/jqgrid/4.6.0/js/jquery.jqGrid.min.js"></script>
+    <script src="${root!}/mine/formToJson.js"></script>
+    <script src="${root!}/layui/layui.js"></script>
+</head>
+<body>
+<div jqGrid_wrapper>
+    <table id="grid-table"></table>
+    <!--jqGrid 浏览导航栏所在-->
+    <div id="grid-pager"></div>
+</div>
+<!---->
+</body>
+
+<script>
+    var grid_selector = "#grid-table";
+    var pager_selector = "#grid-pager";
+    $(function(){
+        $("#grid-table").jqGrid({
+            //用于检索的Servlet URL
+            url:"${root!}/getData",
+            //用于添加、修改、删除的Servlet URL
+            editurl: "${root!}/demochangeServlet",
+            //data: grid_data, //当 datatype 为"local" 时需填写
+            datatype:"json", //数据来源，本地数据（local，json,jsonp,xml等）
+            height: 150, //高度，表格高度。可为数值、百分比或'auto'
+            mtype:"POST",//提交方式
+            styleUI: 'Bootstrap',
+            colNames: ['出库单号', '出库类型', '总金额', '申请人（单位）', '备注'],
+            colModel: [{
+                name: 'id', index: 'id', key: true, width: 100, editable: false,
+                editoptions: {
+                    size: "20", maxlength: "30"
+                }
+            }, {
+                name: 'type', index: 'type', width: 200, editable: true, edittype: "select",
+                editoptions: {
+                    value: "1:采购入库;2:退用入库"
+                }
+            }, {
+                name: 'pay', index: 'pay', width: 60, sorttype: "double", editable: true
+            }, {
+                name: 'name', index: 'name', width: 150, editable: true,
+                editoptions: {
+                    size: "20",
+                    maxlength: "30"
+                }
+            }, {
+                name: 'text', index: 'text', width: 250, sortable: false, editable: true,
+                edittype: "textarea",
+                editoptions: {
+                    rows: "2",
+                    cols: "10"
+                }
+            }, ],
+            viewrecords: true,
+            rowNum: 10,
+            rowList: [10, 20, 30],
+            pager: pager_selector,
+            altRows: true,
+
+            multiselect: true,
+
+            multiboxonly: true,
+
+            caption: "采购退货单列表",
+            autowidth: true
+        });
+        //浏览导航栏添加功能部分代码
+        $(grid_selector).navGrid(pager_selector, {
+                search: true, // 检索
+                add: true, //添加 （只有editable为true时才能显示属性）
+                edit: true, //修改（只有editable为true时才能显示属性）
+                del: true, //删除
+                refresh: true //刷新
+            }, {}, // edit options
+            {}, // add options
+            {}, // delete options
+            {
+                multipleSearch: true
+            } // search options - define multiple search
+        );
+    })
+</script>
+</html>
